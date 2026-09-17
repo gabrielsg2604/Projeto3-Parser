@@ -172,10 +172,19 @@ class Parser:
         return TYPE_BY_TOKEN[token.kind]
 
     def parse_parameter_list(self) -> list[Parameter]:
-        raise NotImplementedError("implemente parameter_list")
+        parameters = [self.parse_parameter()]
+
+        while self.match(TokenKind.COMMA):    # match ja consome a virgula se bater
+            parameters.append(self.parse_parameter())
+
+        return parameters
 
     def parse_parameter(self) -> Parameter:
-        raise NotImplementedError("implemente parameter")
+        start = self.peek()                   
+        type_name = self.parse_type()          
+        name = self.expect(TokenKind.IDENTIFIER)
+
+        return Parameter(type_name, name.lexeme, span=self._span(start, name))
 
     def parse_block(self) -> Block:
         raise NotImplementedError("implemente block")
